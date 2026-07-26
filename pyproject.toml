@@ -34,7 +34,7 @@ dependencies = [
   "pydantic-settings==2.6.1",
   "click==8.4.2",
   "typer[all]==0.10.0",
-  "alembic==1.11.1",
+  "alembic==1.18.5",
   "email-validator==2.3.0",
 ]
 
