@@ -1,0 +1,10 @@
+blank_issues_enabled: false
+
+contact_links:
+  - name: GitHub Discussions
+    url: https://github.com/strix-engineering-studio/racerapi/discussions
+    about: Ask questions and discuss ideas.
+
+  - name: Security Report
+    url: https://github.com/strix-engineering-studio/racerapi/security/advisories
+    about: Report security vulnerabilities privately.

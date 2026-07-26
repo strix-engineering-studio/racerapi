@@ -1,0 +1,23 @@
+# Default owner
+* @iamprathameshmore
+
+# Core framework
+/src/racerapi/core/ @iamprathameshmore
+
+# CLI
+/src/racerapi/cli/ @iamprathameshmore
+
+# Database
+/src/racerapi/db/ @iamprathameshmore
+
+# Modules
+/src/racerapi/modules/ @iamprathameshmore
+
+# GitHub
+/.github/ @iamprathameshmore
+
+# Tests
+/tests/ @iamprathameshmore
+
+# Documentation
+/docs/ @iamprathameshmore
