@@ -1,20 +1,32 @@
 # Architecture Overview
 
-RacerAPI enforces a strict layered architecture to keep concerns separated and to make reasoning, testing, and evolution easier.
-
-Mermaid diagram showing the flow:
+RacerAPI is a modular monolith framework. A module owns a business capability and exposes its HTTP interface without leaking persistence concerns into the transport layer.
 
 ```mermaid
-graph TD
-  API --> Service
-  Service --> Repo
-  Repo --> DB
+flowchart TD
+  App[Application Bootstrap] --> Modules[Feature Modules]
+  Modules --> API[Controller / API]
+  API --> Service[Service]
+  Service --> Repo[Repository]
+  Repo --> DB[(Database)]
+  App --> Plugins[Optional Plugins]
+  App --> DI[Application DI Container]
 ```
 
-Why this structure?
-- API: HTTP layer, request/response models, routing and authentication.
-- Service: business rules and orchestration, raises domain-level exceptions.
-- Repo: persistence implementation, maps business objects to DB rows.
-- DB: the physical storage (managed through migrations).
+## Responsibilities
 
-This separation reduces accidental coupling (for example, database code leaking into the API layer) and makes it straightforward to swap persistence backends or add cross-cutting concerns (caching, events) at the correct layer.
+- **Application:** settings, dependency container, plugins, module discovery and ASGI lifecycle.
+- **Module:** cohesive business capability and its public integration boundary.
+- **API/controller:** HTTP transport, validation and response mapping.
+- **Service:** use cases and business rules.
+- **Repository:** persistence operations and ORM mapping.
+- **Database:** engine, sessions and migrations.
+
+## Rules
+
+1. API handlers call services; they do not query the database directly.
+2. Services do not import FastAPI request/response objects.
+3. Repositories own persistence implementation details.
+4. Modules communicate through explicit public service/provider contracts, not another module's private repository.
+5. Plugins extend infrastructure without modifying framework internals.
+6. Application configuration is injected; avoid process-wide mutable application state.
