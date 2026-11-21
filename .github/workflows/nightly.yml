@@ -1,40 +1,24 @@
 name: Nightly
-
 on:
   schedule:
     - cron: "0 2 * * *"
-
   workflow_dispatch:
-
+permissions:
+  contents: read
 jobs:
   nightly:
     runs-on: ubuntu-latest
-
     strategy:
+      fail-fast: false
       matrix:
-        python-version:
-          - "3.11"
-
-          - "3.12"
-
-          - "3.13"
-
+        python-version: ["3.11", "3.12", "3.13"]
     steps:
-      - uses: actions/checkout@v7
-
-      - uses: actions/setup-python@v7
-
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
-
-      - run: |
-
-          python -m pip install --upgrade pip
-
-          pip install -e .
-
-          pip install pytest
-
-      - run: |
-
-          pytest
+      - uses: snok/install-poetry@v1
+        with:
+          version: "1.8.5"
+      - run: poetry install --with dev
+      - run: poetry run pytest -q
