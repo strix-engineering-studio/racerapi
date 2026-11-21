@@ -1,56 +1,65 @@
 # Getting Started
 
-This guide walks a new developer through creating a demo app, generating a module, running migrations, and launching the server. It uses the real CLI shipped with the project.
+## Requirements
 
-1. Install the package in editable/development mode
+- Python 3.11 or newer
+- Poetry 1.8 or newer
 
-```bash
-python -m pip install -e .
-```
+## Install
 
-2. Verify the CLI is available
-
-```bash
-racerapi --help
-```
-
-3. Create a new demo project and generate a `users` module
+Create a project and add RacerAPI:
 
 ```bash
-racerapi new demo_app
-cd demo_app
-racerapi generate module users
+poetry new inventory-api
+cd inventory-api
+poetry add racerapi
+poetry add uvicorn
 ```
 
-Notes:
-- The generator writes code into `src/<pkg>/modules/<name>` and validates the module is importable after generation.
-- The generated module follows the framework contract: `api.py`, `service.py`, `repo.py`, `models.py`, `schemas.py`, `deps.py`.
+## Bootstrap an application
 
-4. Prepare the database and run migrations
+Create `main.py`:
 
-By design, the application does not create or modify schema at startup. Use the CLI's Alembic wrapper to create migrations and apply them:
+```python
+from racerapi import create_app
+
+app = create_app(title="Inventory API")
+```
+
+Run it:
 
 ```bash
-racerapi db migrate
-racerapi db upgrade
+poetry run uvicorn main:app --reload
 ```
 
-If you see `Initializing alembic environment` during the first run, that's expected — the CLI will scaffold a minimal Alembic environment in your project directory.
+## Generate a project
 
-5. Run the application
+The CLI can scaffold a project with Poetry metadata:
 
 ```bash
-racerapi run
-# or to bind to a different host/port:
-racerapi run --host 0.0.0.0 --port 8080
+racerapi new inventory_api --db sql
+cd inventory_api
+poetry install
+poetry run racerapi dev
 ```
 
-6. Try the generated endpoint
+## Generate a module
 
 ```bash
-curl -sS http://127.0.0.1:8000/users | jq
+racerapi generate module products
 ```
 
-Why this matters
-- The `new` and `generate` commands create code that is valid and importable — you should not need to edit generated files to get a working endpoint.
-- Migrations are authoritative: you must run `db migrate` / `db upgrade` for schema changes.
+A generated module contains API routes, a service, repository, database models, Pydantic schemas, dependency providers, and tests.
+
+## Environment
+
+RacerAPI reads configuration from environment variables and an optional `.env` file.
+
+```env
+APP_ENV=dev
+SQL_DATABASE_URL=sqlite+pysqlite:///./app.db
+MONGO_DATABASE_URL=mongodb://localhost:27017/app
+LOG_LEVEL=INFO
+```
+
+Use Alembic migrations to evolve production database schemas. Do not create production tables automatically during application startup.

@@ -2,169 +2,102 @@
   <img src="assets/racerapi-logo.png" alt="RacerAPI Logo"/>
 </p>
 
-
-<p align="center">
-  Production-grade modular monolith architecture built on FastAPI
-</p>
+<h1 align="center">RacerAPI</h1>
+<p align="center">A modular, NestJS-inspired Python framework powered by FastAPI.</p>
 
 ---
 
-## 🚀 Overview
+## What is RacerAPI?
 
-RacerAPI is a **minimal, structured backend foundation** for building scalable applications using FastAPI.
+RacerAPI provides a structured application framework for building modular Python APIs. It combines FastAPI's ASGI foundation with a NestJS-style developer experience: modules, controllers/routes, services, repositories, dependency injection, plugins, CLI generators, and explicit application bootstrap.
 
-It combines:
+**Architecture:** `Module → Controller/API → Service → Repository → Database`
 
-* ⚡ FastAPI performance
-* 🧩 Modular architecture (inspired by NestJS)
-* 🧱 Clean layering and separation of concerns
+## Requirements
 
----
+- Python 3.11+
+- Poetry 1.8+
+- Optional: a supported SQL database or MongoDB integration
 
-## 🏗️ Architecture
+## Create an application
 
-RacerAPI follows a **modular monolith design**:
-
-```text
-API (controller) → Service → Repository → Database
+```bash
+poetry new my-api
+cd my-api
+poetry add racerapi
+poetry add fastapi uvicorn
 ```
 
-### Key Principles
+Or generate a project using the framework CLI:
 
-* No framework wrapping (pure FastAPI)
-* Feature-based modules (`modules/`)
-* Clear separation of concerns
-* No cross-module imports
-* Dependency injection via FastAPI `Depends`
+```bash
+racerapi new my-api --db sql
+cd my-api
+poetry install
+poetry run racerapi dev
+```
 
----
+## Generate a feature module
 
-## 📂 Project Structure
+```bash
+racerapi generate module products
+```
+
+Generated modules follow a predictable structure:
 
 ```text
-racerapi/
-├── main.py
-├── core/
-├── modules/
-│   └── <feature>/
-│       ├── controller.py
-│       ├── service.py
-│       ├── repository.py   # optional
-│       ├── module.py
-│       └── tests
-├── shared/
-├── utils/
+modules/products/
+├── api.py
+├── service.py
+├── repo.py
+├── models.py
+├── schemas.py
+├── deps.py
 └── tests/
 ```
 
----
+## Application bootstrap
 
-## ⚡ Quick Start
+```python
+from racerapi import create_app
 
-### 1. Setup environment
+app = create_app(title="Store API")
+```
+
+Run with:
 
 ```bash
-python -m venv .venv
-.venv\Scripts\activate
-pip install -e .
+uvicorn main:app --reload
 ```
 
----
+## Core capabilities
 
-### 2. Run the application
+- Modular application structure and module discovery
+- FastAPI-native request validation and dependency overrides
+- Application-scoped dependency injection container
+- Plugin registration hooks
+- SQLAlchemy database layer and Alembic migration commands
+- CLI for project/module generation, database operations, diagnostics and runtime
+- Request-aware structured logging
+- Architecture rules and test support
+
+## Development
 
 ```bash
-python -m racerapi.main
+poetry install --with dev
+poetry run pytest -q
+poetry run ruff check src tests
+poetry build
 ```
 
----
+## Compatibility and stability
 
-### 3. Health check
+RacerAPI 1.0.0 establishes the supported public baseline: `racerapi.create_app`, the `racerapi` CLI entrypoint, Poetry project management, and the documented module contract. Internal modules are not guaranteed as public extension points unless documented.
 
-```bash
-curl http://127.0.0.1:8000/health
-```
+## Documentation
 
----
+See the [RacerAPI documentation](https://strix-engineering-studio.github.io/racerapi/).
 
-## 🧪 Development & Validation
+## License
 
-Run tests:
-
-```bash
-python -m pytest -q
-```
-
-Lint code:
-
-```bash
-python -m ruff check src tests
-```
-
-Architecture validation:
-
-```bash
-python scripts/check_architecture.py
-```
-
----
-
-## ⚙️ Environment Configuration
-
-Copy:
-
-```bash
-.env.example → .env
-```
-
-### Key variables:
-
-```env
-RACERAPI_ENV=dev|test|prod
-RACERAPI_DATABASE_URL=your_database_url
-RACERAPI_LOG_LEVEL=INFO
-RACERAPI_DEBUG=false
-```
-
----
-
-## 🎯 Design Goals
-
-* Minimal but scalable
-* Clear architecture without over-engineering
-* Easy onboarding for developers
-* Production-ready foundation
-
----
-
-## 🔌 Extensibility (Plugins)
-
-RacerAPI is designed to support optional plugins:
-
-* Database integrations (SQL, Mongo)
-* Authentication (JWT, OAuth)
-* Logging and monitoring
-* Caching and background jobs
-
-Plugins extend the system **without coupling to core**.
-
----
-
-## 📌 Philosophy
-
-> Keep the core simple. Add complexity only when needed.
-
----
-
-## 🛣️ Roadmap
-
-* Plugin system (DB, Auth, Logger)
-* Dependency Injection container
-* CLI generators (modules, resources)
-* Production tooling improvements
-
----
-
-## 📄 License
-
-MIT License
+MIT. See [LICENSE.md](LICENSE.md).

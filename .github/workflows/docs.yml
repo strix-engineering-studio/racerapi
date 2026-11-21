@@ -1,35 +1,22 @@
 name: Documentation
-
 on:
   push:
-    branches:
-      - main
-
+    branches: [main]
+  workflow_dispatch:
 permissions:
   contents: write
-
 jobs:
-  deploy:
+  docs:
     runs-on: ubuntu-latest
-
     steps:
-      - uses: actions/checkout@v7
-
-      - uses: actions/setup-python@v7
-
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-
-      - name: Install
-
-        run: |
-
-          pip install mkdocs
-
-          pip install mkdocs-material
-
-      - name: Deploy
-
-        run: |
-
-          mkdocs gh-deploy --force
+      - uses: snok/install-poetry@v1
+        with:
+          version: "1.8.5"
+      - run: poetry install --with dev
+      - run: poetry run mkdocs build --strict
+      - if: github.ref == 'refs/heads/main'
+        run: poetry run mkdocs gh-deploy --force

@@ -1,6 +1,9 @@
 site_name: RacerAPI
-site_description: Production-grade FastAPI modular framework
-site_author: RacerAPI Team
+site_description: Modular, NestJS-inspired Python framework powered by FastAPI
+site_author: Strix Engineering Studio
+site_url: https://strix-engineering-studio.github.io/racerapi/
+repo_url: https://github.com/strix-engineering-studio/racerapi
+repo_name: strix-engineering-studio/racerapi
 theme:
   name: material
   features:
@@ -32,11 +35,9 @@ nav:
   - Architecture:
       - Rules: architecture/rules.md
       - Enforcement: architecture/enforcement.md
-  - Deployment:
-      - Production: deployment/production.md
+  - Deployment: deployment/production.md
 markdown_extensions:
   - admonition
-  - codehilite
   - pymdownx.superfences
   - toc:
       permalink: true

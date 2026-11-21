@@ -1,31 +1,12 @@
-name: Deploy RacerAPI Docs
-
+# Documentation deployment is maintained by .github/workflows/docs.yml.
+# This workflow intentionally does not deploy to avoid duplicate gh-pages pushes.
+name: Legacy docs workflow (disabled)
 on:
-  push:
-    branches: [ main ]
   workflow_dispatch:
-
+permissions:
+  contents: read
 jobs:
-  deploy:
+  notice:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write   # <-- IMPORTANT
-
     steps:
-      - uses: actions/checkout@v7
-        with:
-          fetch-depth: 0
-
-      - uses: actions/setup-python@v7
-        with:
-          python-version: "3.11"
-
-      - name: Install MkDocs + Plugins
-        run: |
-          pip install mkdocs-material
-          pip install mkdocstrings[python]
-          pip install mkdocs-awesome-pages-plugin
-
-      - name: Build & Deploy Docs
-        working-directory: src/docs
-        run: mkdocs gh-deploy --force
+      - run: echo "Use the docs.yml workflow for documentation deployment."

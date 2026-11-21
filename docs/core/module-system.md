@@ -1,19 +1,25 @@
 # Module System
 
-Each module is an independently testable unit that follows a small contract. The registry discovers modules and imports their `api` modules which register routers with the application.
+A feature module represents one cohesive business capability. Keep module-specific routes, schemas, services, repositories, models, and tests together.
 
-Module layout
-
+```text
+modules/<feature>/
+├── __init__.py
+├── api.py
+├── service.py
+├── repo.py
+├── models.py
+├── schemas.py
+├── deps.py
+└── tests/
 ```
-modules/<name>/
-  api.py      # APIRouter and endpoints
-  service.py  # business logic
-  repo.py     # persistence
-  models.py   # SQLAlchemy models
-  schemas.py  # Pydantic DTOs
-  deps.py     # DI helpers (get_<singular>_service)
-```
 
-The generator templates live in `src/racerapi/templates/module` and the generator validates the module is importable after creating files.
+## Registration contract
 
-See the registry implementation at [src/racerapi/modules/registry.py](src/racerapi/modules/registry.py).
+For modules requiring explicit bootstrap, expose a `register(container, app)` function in `module.py`. RacerAPI discovers the module entrypoint and passes the application-scoped dependency container and FastAPI application.
+
+Legacy modules can expose `api.py` and register an `APIRouter` using `racerapi.modules.registry.register_router`. New modules should prefer explicit module registration.
+
+## Boundaries
+
+Modules should not import private implementation files from other modules. Share cross-cutting contracts through explicit provider interfaces or a dedicated shared package.
