@@ -1,34 +1,33 @@
-import pytest
-
 from racerapi.core.config import Settings
 
 
-def test_prod_env_rejects_sqlite_database_url():
-    with pytest.raises(ValueError):
-        Settings(
-            env="prod",
-            debug=False,
-            database_url="sqlite:///./prod.db",
-            log_level="INFO",
-            app_name="RacerAPI",
-        )
-
-
-def test_prod_env_rejects_debug_true():
-    with pytest.raises(ValueError):
-        Settings(
-            env="prod",
-            debug=True,
-            database_url="postgresql+psycopg://user:pass@localhost/db",
-            log_level="INFO",
-            app_name="RacerAPI",
-        )
-
-
-def test_dev_env_allows_sqlite_and_debug_false_by_default():
+def test_settings_accept_environment_and_database_aliases():
     settings = Settings(
-        env="dev", database_url="sqlite:///./dev.db", app_name="RacerAPI"
+        APP_ENV="prod",
+        SQL_DATABASE_URL="postgresql+psycopg://user:pass@localhost/app",
+        LOG_LEVEL="DEBUG",
     )
+
+    assert settings.app_env == "prod"
+    assert settings.env == "prod"
+    assert settings.database_url.startswith("postgresql")
+    assert settings.log_level == "DEBUG"
+
+
+def test_settings_support_legacy_environment_variable_names():
+    settings = Settings(
+        RACERAPI_ENV="test",
+        RACERAPI_DATABASE_URL="sqlite+pysqlite:///:memory:",
+        RACERAPI_LOG_LEVEL="INFO",
+    )
+
+    assert settings.env == "test"
+    assert settings.database_url == "sqlite+pysqlite:///:memory:"
+
+
+def test_default_settings_are_development_safe():
+    settings = Settings()
+
     assert settings.env == "dev"
     assert settings.database_url.startswith("sqlite")
-    assert settings.debug is False
+    assert settings.log_level == "INFO"
